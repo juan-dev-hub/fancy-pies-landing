@@ -1,10 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useCallback, useRef } from 'react'
-import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Carousel,
   CarouselContent,
@@ -28,12 +24,9 @@ import {
   Zap,
   Package,
   DollarSign,
-  Send,
   Instagram,
   Facebook,
   Twitter,
-  Snowflake,
-  Sun,
 } from 'lucide-react'
 
 // ============================================
@@ -69,7 +62,6 @@ const NAV_LINKS = [
   { href: '#beneficios', label: 'Beneficios' },
   { href: '#testimonios', label: 'Testimonios' },
   { href: '#ubicacion', label: 'Ubicación' },
-  { href: '#contacto', label: 'Contacto' },
 ]
 
 const PRODUCTS: Product[] = [
@@ -151,39 +143,94 @@ const SCHEDULE = [
 ]
 
 // ============================================
-// SNOW EFFECT COMPONENT
+// SEASON DETECTOR
 // ============================================
-const SnowEffect: React.FC<{ active: boolean }> = ({ active }) => {
-  // Generate snowflakes using useMemo to avoid setState in effect
-  const snowflakes = React.useMemo(() => {
-    if (!active) return []
-    return Array.from({ length: 50 }, (_, i) => ({
+type Season = 'spring' | 'summer' | 'autumn' | 'winter'
+
+function getCurrentSeason(): Season {
+  const month = new Date().getMonth() + 1 // 1-12
+  
+  // Northern Hemisphere seasons
+  if (month >= 3 && month <= 5) return 'spring'      // Mar-May: Primavera
+  if (month >= 6 && month <= 8) return 'summer'      // Jun-Aug: Verano
+  if (month >= 9 && month <= 11) return 'autumn'     // Sep-Nov: Otoño
+  return 'winter'                                    // Dec-Feb: Invierno
+}
+
+function getSeasonInfo(season: Season) {
+  const info = {
+    spring: { name: 'Primavera', emoji: '🌸', color: '#FFB7C5' },
+    summer: { name: 'Verano', emoji: '☀️', color: '#FFD700' },
+    autumn: { name: 'Otoño', emoji: '🍂', color: '#D2691E' },
+    winter: { name: 'Invierno', emoji: '❄️', color: '#87CEEB' },
+  }
+  return info[season]
+}
+
+// ============================================
+// SEASONAL EFFECTS COMPONENT
+// ============================================
+const SeasonalEffect: React.FC = () => {
+  const season = getCurrentSeason()
+  
+  // Generate particles based on season
+  const particles = React.useMemo(() => {
+    const count = season === 'winter' ? 60 : season === 'autumn' ? 40 : 50
+    return Array.from({ length: count }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
-      size: Math.random() * 15 + 8,
-      duration: Math.random() * 5 + 5,
+      size: Math.random() * 15 + 10,
+      duration: Math.random() * 8 + 5,
       delay: Math.random() * 5,
+      drift: (Math.random() - 0.5) * 100, // Horizontal drift
     }))
-  }, [active])
+  }, [season])
 
-  if (!active) return null
+  // Get emoji based on season
+  const getParticleEmoji = () => {
+    switch (season) {
+      case 'winter': return '❄'
+      case 'summer': return '💧'
+      case 'autumn': return '🍂'
+      case 'spring': return '🌸'
+    }
+  }
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
-      {snowflakes.map((flake) => (
+      {particles.map((particle) => (
         <div
-          key={flake.id}
-          className="snowflake"
+          key={particle.id}
+          className="seasonal-particle"
           style={{
-            left: `${flake.left}%`,
-            fontSize: `${flake.size}px`,
-            animationDuration: `${flake.duration}s`,
-            animationDelay: `${flake.delay}s`,
-          }}
+            left: `${particle.left}%`,
+            fontSize: `${particle.size}px`,
+            animationDuration: `${particle.duration}s`,
+            animationDelay: `${particle.delay}s`,
+            '--drift': `${particle.drift}px`,
+          } as React.CSSProperties}
         >
-          ❄
+          {getParticleEmoji()}
         </div>
       ))}
+    </div>
+  )
+}
+
+// ============================================
+// SEASON INDICATOR (Small badge showing current season)
+// ============================================
+const SeasonIndicator: React.FC = () => {
+  const season = getCurrentSeason()
+  const info = getSeasonInfo(season)
+  
+  return (
+    <div 
+      className="fixed bottom-6 right-6 z-50 aero-card px-4 py-2 flex items-center gap-2"
+      title={`Estación actual: ${info.name}`}
+    >
+      <span className="text-lg">{info.emoji}</span>
+      <span className="text-sm font-medium text-foreground">{info.name}</span>
     </div>
   )
 }
@@ -807,189 +854,6 @@ const LocationSection: React.FC = () => {
 }
 
 // ============================================
-// CONTACT SECTION
-// ============================================
-const ContactSection: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setError(null)
-    
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Error al enviar el mensaje')
-      }
-
-      // Success
-      setSubmitted(true)
-      setFormData({ name: '', email: '', message: '' })
-      
-      // Reset success message after 5 seconds
-      setTimeout(() => setSubmitted(false), 5000)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al enviar el mensaje')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  return (
-    <section id="contacto" className="py-16 sm:py-20 lg:py-24 aero-gradient relative overflow-hidden">
-      <FloatingBubbles />
-      
-      <div className="container mx-auto px-4 relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="section-title text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 text-foreground">
-            Contáctanos
-          </h2>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-            ¿Tienes dudas? Escríbenos y te respondemos al instante
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
-          {/* Contact Info */}
-          <div className="space-y-6">
-            <div className="aero-card p-6">
-              <div className="flex items-center gap-4">
-                <div className="icon-container-aero w-12 h-12">
-                  <Mail className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground">Email</h3>
-                  <p className="text-muted-foreground">contacto@fancypies.com</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="aero-card p-6">
-              <div className="flex items-center gap-4">
-                <div className="icon-container-aero w-12 h-12">
-                  <Phone className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground">Teléfono</h3>
-                  <p className="text-muted-foreground">+52 55 1234 5678</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="aero-card p-6">
-              <div className="flex items-center gap-4">
-                <div className="icon-container-aero w-12 h-12">
-                  <MessageCircle className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-foreground">WhatsApp</h3>
-                  <p className="text-muted-foreground">+52 55 1234 5678</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Form */}
-          <div className="aero-card p-6 sm:p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2 text-foreground">Nombre</label>
-                <Input
-                  type="text"
-                  placeholder="Tu nombre"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="input-aero w-full"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2 text-foreground">Email</label>
-                <Input
-                  type="email"
-                  placeholder="tu@email.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="input-aero w-full"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium mb-2 text-foreground">Mensaje</label>
-                <Textarea
-                  placeholder="¿En qué podemos ayudarte?"
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  className="input-aero w-full min-h-[120px] resize-none"
-                  required
-                />
-              </div>
-              
-              {/* Error Message */}
-              {error && (
-                <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-600 text-sm">
-                  <p className="font-medium">⚠️ {error}</p>
-                </div>
-              )}
-              
-              {/* Success Message */}
-              {submitted && (
-                <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/30 text-green-600 text-sm">
-                  <p className="font-medium">✅ ¡Mensaje enviado correctamente! Te contactaremos pronto.</p>
-                </div>
-              )}
-              
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="aero-button w-full py-4 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Enviando...
-                  </span>
-                ) : submitted ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <Sparkles className="w-5 h-5" />
-                    ¡Mensaje Enviado!
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    <Send className="w-5 h-5" />
-                    Enviar Mensaje
-                  </span>
-                )}
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-// ============================================
 // FOOTER
 // ============================================
 const Footer: React.FC = () => {
@@ -1097,31 +961,6 @@ const Footer: React.FC = () => {
 }
 
 // ============================================
-// SNOW TOGGLE COMPONENT
-// ============================================
-const SnowToggle: React.FC<{ enabled: boolean; onToggle: (value: boolean) => void }> = ({
-  enabled,
-  onToggle,
-}) => {
-  return (
-    <div className="fixed bottom-24 right-6 z-50">
-      <div className="aero-card p-3 flex items-center gap-3">
-        {enabled ? (
-          <Snowflake className="w-5 h-5 text-primary animate-pulse" />
-        ) : (
-          <Sun className="w-5 h-5 text-yellow-500" />
-        )}
-        <Switch
-          checked={enabled}
-          onCheckedChange={onToggle}
-          className="data-[state=checked]:bg-primary"
-        />
-      </div>
-    </div>
-  )
-}
-
-// ============================================
 // CHAT BUTTON
 // ============================================
 const ChatButton: React.FC = () => {
@@ -1145,20 +984,17 @@ const ChatButton: React.FC = () => {
 // MAIN PAGE COMPONENT
 // ============================================
 export default function Home() {
-  const [snowEnabled, setSnowEnabled] = useState(false)
-
   return (
     <main className="min-h-screen flex flex-col">
-      <SnowEffect active={snowEnabled} />
+      <SeasonalEffect />
       <Navbar />
       <HeroSection />
       <ProductsSection />
       <BenefitsSection />
       <TestimonialsSection />
       <LocationSection />
-      <ContactSection />
       <Footer />
-      <SnowToggle enabled={snowEnabled} onToggle={setSnowEnabled} />
+      <SeasonIndicator />
       <ChatButton />
     </main>
   )

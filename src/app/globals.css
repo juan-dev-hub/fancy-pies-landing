@@ -276,8 +276,96 @@
   animation: float 6s ease-in-out infinite;
 }
 
-/* Snow Effect */
-@keyframes snowfall {
+/* ========================================
+   SEASONAL EFFECTS ANIMATIONS
+   ======================================== */
+
+/* Generic seasonal particle */
+@keyframes seasonal-fall {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--drift, 20px)) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Rain effect (Summer) - faster, more vertical */
+@keyframes rain-fall {
+  0% {
+    transform: translateY(-10vh) translateX(0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.7;
+  }
+  95% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(110vh) translateX(10px);
+    opacity: 0;
+  }
+}
+
+/* Falling leaves (Autumn) - slower, more drift */
+@keyframes leaf-fall {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(50vh) translateX(calc(var(--drift, 50px) * 2)) rotate(180deg) scale(1.1);
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--drift, 100px)) rotate(540deg) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* Sakura petals (Spring) - gentle, floating */
+@keyframes sakura-fall {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.9;
+  }
+  25% {
+    transform: translateY(25vh) translateX(calc(var(--drift, 30px) * 0.5)) rotate(90deg) scale(1.05);
+  }
+  50% {
+    transform: translateY(50vh) translateX(calc(var(--drift, 30px) * -0.3)) rotate(180deg) scale(1);
+  }
+  75% {
+    transform: translateY(75vh) translateX(calc(var(--drift, 30px) * 0.8)) rotate(270deg) scale(0.95);
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(110vh) translateX(var(--drift, 50px)) rotate(360deg) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* Snow (Winter) - slow, gentle drift */
+@keyframes snow-fall {
   0% {
     transform: translateY(-10vh) translateX(0) rotate(0deg);
     opacity: 0;
@@ -285,15 +373,59 @@
   10% {
     opacity: 1;
   }
+  25% {
+    transform: translateY(25vh) translateX(calc(var(--drift, 20px) * 0.5)) rotate(90deg);
+  }
+  50% {
+    transform: translateY(50vh) translateX(calc(var(--drift, 20px) * -0.5)) rotate(180deg);
+  }
+  75% {
+    transform: translateY(75vh) translateX(calc(var(--drift, 20px) * 0.3)) rotate(270deg);
+  }
   90% {
     opacity: 1;
   }
   100% {
-    transform: translateY(110vh) translateX(20px) rotate(360deg);
+    transform: translateY(110vh) translateX(var(--drift, 40px)) rotate(360deg);
     opacity: 0;
   }
 }
 
+.seasonal-particle {
+  position: fixed;
+  top: 0;
+  pointer-events: none;
+  z-index: 9999;
+  animation: seasonal-fall linear infinite;
+}
+
+/* Snowflake - white with glow */
+.seasonal-particle:has(> "❄") {
+  color: white;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.9), 0 0 15px rgba(135, 206, 250, 0.5);
+  animation-name: snow-fall;
+}
+
+/* Rain drop - blue, narrow */
+.seasonal-particle:has(> "💧") {
+  color: rgba(100, 180, 255, 0.7);
+  text-shadow: 0 0 3px rgba(100, 180, 255, 0.5);
+  animation-name: rain-fall;
+}
+
+/* Autumn leaf - orange/brown */
+.seasonal-particle:has(> "🍂") {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation-name: leaf-fall;
+}
+
+/* Sakura petal - pink */
+.seasonal-particle:has(> "🌸") {
+  text-shadow: 0 0 10px rgba(255, 182, 193, 0.6);
+  animation-name: sakura-fall;
+}
+
+/* Keep old snowflake class for backwards compatibility */
 .snowflake {
   position: fixed;
   top: 0;
@@ -301,7 +433,7 @@
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
   pointer-events: none;
   z-index: 9999;
-  animation: snowfall linear infinite;
+  animation: snow-fall linear infinite;
 }
 
 /* Shine Effect */
