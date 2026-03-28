@@ -44,3 +44,4 @@ dev.log
 
 # z scripts
 .zscripts/
+generate-images.ts

@@ -155,21 +155,21 @@ const NAV_LINKS = [
 ]
 
 const PRODUCTS: Product[] = [
-  { id: 1, image: '/assets/carousel-1.webp', thumbnail: '/assets/thumb-1.webp', name: 'Zapato Elegante Classic' },
-  { id: 2, image: '/assets/carousel-2.webp', thumbnail: '/assets/thumb-2.webp', name: 'Tenis Sport Premium' },
-  { id: 3, image: '/assets/carousel-3.webp', thumbnail: '/assets/thumb-3.webp', name: 'Zapato Formal Ejecutivo' },
-  { id: 4, image: '/assets/carousel-4.webp', thumbnail: '/assets/thumb-4.webp', name: 'Bota Urbana Moderna' },
-  { id: 5, image: '/assets/carousel-5.webp', thumbnail: '/assets/thumb-5.webp', name: 'Sandalia Verano Cool' },
-  { id: 6, image: '/assets/carousel-6.webp', thumbnail: '/assets/thumb-6.webp', name: 'Tenis Running Pro' },
+  { id: 1, image: '/assets/carousel-1.webp', thumbnail: '/assets/thumb-1.webp', name: 'Modelo 1' },
+  { id: 2, image: '/assets/carousel-2.webp', thumbnail: '/assets/thumb-2.webp', name: 'Modelo 2' },
+  { id: 3, image: '/assets/carousel-3.webp', thumbnail: '/assets/thumb-3.webp', name: 'Modelo 3' },
+  { id: 4, image: '/assets/carousel-4.webp', thumbnail: '/assets/thumb-4.webp', name: 'Modelo 4' },
+  { id: 5, image: '/assets/carousel-5.webp', thumbnail: '/assets/thumb-5.webp', name: 'Modelo 5' },
+  { id: 6, image: '/assets/carousel-6.webp', thumbnail: '/assets/thumb-6.webp', name: 'Modelo 6' },
 ]
 
 const TESTIMONIALS: Testimonial[] = [
-  { id: 1, name: 'María García', comment: '¡Increíble calidad! Encontré el par perfecto para mi evento.', rating: 5, image: '/assets/client-1.webp' },
-  { id: 2, name: 'Carlos Rodríguez', comment: 'Precios justos y gran variedad. La atención fue excepcional.', rating: 5, image: '/assets/client-2.webp' },
-  { id: 3, name: 'Ana Martínez', comment: 'Me encantó la experiencia. Los zapatos son cómodos y únicos.', rating: 5, image: '/assets/client-3.webp' },
-  { id: 4, name: 'José López', comment: 'Tienen tallas que en otros lados no encuentro. Muy recomendable.', rating: 4, image: '/assets/client-4.webp' },
-  { id: 5, name: 'Laura Sánchez', comment: 'El mejor lugar para encontrar zapatos de calidad.', rating: 5, image: '/assets/client-5.webp' },
-  { id: 6, name: 'Pedro Hernández', comment: 'Excelente ubicación y horarios convenientes.', rating: 5, image: '/assets/client-6.webp' },
+  { id: 1, name: 'María García', comment: '¡Increíble calidad! Encontré el par perfecto para mi evento.', rating: 5, image: 'https://ui-avatars.com/api/?name=Maria+Garcia&background=4CAF50&color=fff&size=200&bold=true' },
+  { id: 2, name: 'Carlos Rodríguez', comment: 'Precios justos y gran variedad. La atención fue excepcional.', rating: 5, image: 'https://ui-avatars.com/api/?name=Carlos+Rodriguez&background=2196F3&color=fff&size=200&bold=true' },
+  { id: 3, name: 'Ana Martínez', comment: 'Me encantó la experiencia. Los zapatos son cómodos y únicos.', rating: 5, image: 'https://ui-avatars.com/api/?name=Ana+Martinez&background=E91E63&color=fff&size=200&bold=true' },
+  { id: 4, name: 'José López', comment: 'Tienen tallas que en otros lados no encuentro. Muy recomendable.', rating: 4, image: 'https://ui-avatars.com/api/?name=Jose+Lopez&background=FF9800&color=fff&size=200&bold=true' },
+  { id: 5, name: 'Laura Sánchez', comment: 'El mejor lugar para encontrar zapatos de calidad.', rating: 5, image: 'https://ui-avatars.com/api/?name=Laura+Sanchez&background=9C27B0&color=fff&size=200&bold=true' },
+  { id: 6, name: 'Pedro Hernández', comment: 'Excelente ubicación y horarios convenientes.', rating: 5, image: 'https://ui-avatars.com/api/?name=Pedro+Hernandez&background=00BCD4&color=fff&size=200&bold=true' },
 ]
 
 const BENEFITS: Benefit[] = [
@@ -179,7 +179,6 @@ const BENEFITS: Benefit[] = [
 ]
 
 const SCHEDULE = [
-  { day: 'Lunes - Viernes', hours: '9:00 AM - 7:00 PM' },
   { day: 'Sábado', hours: '10:00 AM - 6:00 PM' },
   { day: 'Domingo', hours: '11:00 AM - 4:00 PM' },
 ]
@@ -953,11 +952,11 @@ const LocationSection: React.FC = () => {
               whileHover={{ scale: 1.02 }}
             >
               <img
-                src="/assets/store-front.webp"
-                alt="Fancy Pies - Fachada"
+                src="/assets/hero-bg.webp"
+                alt="Fancy Pies - Pulga 59"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.currentTarget.src = 'https://placehold.co/800x600/4CAF50/FFFFFF?text=Nuestra+Tienda'
+                  e.currentTarget.src = 'https://placehold.co/800x600/4CAF50/FFFFFF?text=Pulga+59'
                 }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
@@ -1034,7 +1033,7 @@ const LocationSection: React.FC = () => {
 
             {/* Map Button */}
             <motion.a
-              href="https://maps.google.com"
+              href="https://maps.app.goo.gl/5ApmRDGJGz4XBNY7A?g_st=it"
               target="_blank"
               rel="noopener noreferrer"
               className="aero-button-blue aero-button text-center py-4"
